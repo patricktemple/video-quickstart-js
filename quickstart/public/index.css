@@ -11,17 +11,17 @@ div.container-fluid {
 }
 
 div#participants {
-  overflow-y: auto;
+  overflow: visible;
 }
 
 div.participant {
   background: center no-repeat url("data:image/svg+xml;utf8,<svg class='bi bi-person-fill' width='80' height='45' viewBox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 100-6 3 3 0 000 6z' clip-rule='evenodd'/></svg>");
   border: 1px solid gray;
   display: inline-flex;
-  height: 90px;
+  height: 400px;
   margin: 10px 5px;
-  max-width: 160px;
-  overflow: hidden;
+  max-width: 500px;
+  overflow: visible;
 }
 
 div.participant > video {
@@ -33,6 +33,7 @@ div.participant.main {
   margin: 10px 0;
   max-width: 100%;
   width: 100%;
+  visibility: hidden;
 }
 
 div.participant.main > video {
@@ -70,7 +71,7 @@ div.participant.main::before {
 
 @media (max-width: 576px) {
   div#participants {
-    overflow-x: auto;
+    overflow-x: visible;
     white-space: nowrap;
   }
 

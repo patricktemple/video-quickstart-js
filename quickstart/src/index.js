@@ -75,40 +75,36 @@ const deviceIds = {
  * @param [error=null] - Error from the previous Room session, if any
  */
 async function selectAndJoinRoom(error = null) {
-  const formData = await selectRoom($joinRoomModal, error);
-  if (!formData) {
-    // User wants to change the camera and microphone.
-    // So, show them the microphone selection modal.
-    deviceIds.audio = null;
-    deviceIds.video = null;
-    return selectMicrophone();
-  }
-  const { identity, roomName } = formData;
+  // const formData = await selectRoom($joinRoomModal, error);
+  // if (!formData) {
+  //   // User wants to change the camera and microphone.
+  //   // So, show them the microphone selection modal.
+  //   deviceIds.audio = null;
+  //   deviceIds.video = null;
+  //   return selectMicrophone();
+  // }
+  // const { identity, roomName } = formData;
+  const identity = "web";
 
-  try {
-    // Fetch an AccessToken to join the Room.
-    const response = await fetch(`/token?identity=${identity}`);
+  const roomName = "test";
 
-    // Extract the AccessToken from the Response.
-    const token = await response.text();
+  // Fetch an AccessToken to join the Room.
+  const response = await fetch(`/token?identity=${identity}`);
 
-    // Add the specified audio device ID to ConnectOptions.
-    connectOptions.audio = { deviceId: { exact: deviceIds.audio } };
+  // Extract the AccessToken from the Response.
+  const token = await response.text();
 
-    // Add the specified Room name to ConnectOptions.
-    connectOptions.name = roomName;
+  // Add the specified audio device ID to ConnectOptions.
+  connectOptions.audio = { deviceId: { exact: deviceIds.audio } };
 
-    // Add the specified video device ID to ConnectOptions.
-    connectOptions.video.deviceId = { exact: deviceIds.video };
+  // Add the specified Room name to ConnectOptions.
+  connectOptions.name = roomName;
 
-    // Join the Room.
-    await joinRoom(token, connectOptions);
+  // Add the specified video device ID to ConnectOptions.
+  connectOptions.video.deviceId = { exact: deviceIds.video };
 
-    // After the video session, display the room selection modal.
-    return selectAndJoinRoom();
-  } catch (error) {
-    return selectAndJoinRoom(error);
-  }
+  // Join the Room.
+  await joinRoom(token, connectOptions);
 }
 
 /**

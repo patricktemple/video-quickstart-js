@@ -75,7 +75,8 @@ function setupParticipantContainer(participant, room) {
   // Add a container for the Participant's media.
   const $container = $(`<div class="participant" data-identity="${identity}" id="${sid}">
     <audio autoplay ${participant === room.localParticipant ? 'muted' : ''} style="opacity: 0"></audio>
-    <video autoplay muted playsinline style="opacity: 0"></video>
+    <video id="${sid}-Camera" autoplay muted playsinline></video>
+    <video id="${sid}-Screen" autoplay muted playsinline></video>
   </div>`);
 
   // Toggle the pinning of the active Participant's video.
@@ -122,7 +123,34 @@ function setVideoPriority(participant, priority) {
  */
 function attachTrack(track, participant) {
   // Attach the Participant's Track to the thumbnail.
-  const $media = $(`div#${participant.sid} > ${track.kind}`, $participants);
+  let $media;
+  if (track.kind === 'video') {
+
+    // Each participant has two <video> elemements, Screen and Camera. Remote
+    // participant has two tracks with these names. Local participant has only
+    // its webcam, which has a random track name. This just makes sure that
+    // all tracks get attached and visile in an ugly way.
+    let name = track.name === 'Screen' ? 'Screen' : 'Camera';
+    $media = $(`#${participant.sid}-${name}`, $participants);
+
+    if (track.name === 'Screen') {
+      // 7s after attaching the "screen" track, we'd expect both remote video tracks
+      // to be up and running. If neither is muted, then everything is fine. But since
+      // we want to trigger this bug, we refresh until the bug occurs. Just start this
+      // page and let it run for 5-30 minutes, and you should return and see that
+      // the problem has arisen.
+      window.setTimeout(() => {
+        
+        let track1 = document.getElementById(`${participant.sid}-Camera`).srcObject.getTracks()[0];
+        let track2 = document.getElementById(`${participant.sid}-Screen`).srcObject.getTracks()[0];
+
+        if (!track1.muted && !track2.muted) window.location.reload()
+        else console.log('one track is muted');
+      }, 7000);
+    }
+  } else {
+    $media = $(`div#${participant.sid}-> ${track.kind}`, $participants);
+  }
   $media.css('opacity', '');
   track.attach($media.get(0));
 
